@@ -1,4 +1,5 @@
 var onScreenTime = 3000;
+var maybe = false;
 function getFetchData(){
     //debugger;
     fetch('https://yesno.wtf/api')
@@ -8,6 +9,35 @@ function getFetchData(){
             console.log("data", data);
         })
 }
+function checkForced(){
+    var text = document.getElementById("main-input").value;
+    var condition = "";
+
+    if (text.includes("ye")) {
+        console.log("force yes");
+        condition = "yes";
+      }
+      else if (text.includes("öl")) {
+        console.log("force no");
+        condition = "no";
+      }
+      else if (text.includes("bilmiyorum")) {
+        console.log("force maybe");
+        condition = "maybe";
+      }
+      else {
+        console.log("text contains no special word");
+        condition = "";
+      }  
+
+    fetch(`https://yesno.wtf/api?force=${condition}`)
+        .then(result => result.json())
+        .then(data => {
+            changeSceneToResult(data.image,data.answer);
+            console.log("data", data);
+        })
+    }
+
 //İlk kullanıldığında hata verdiği için arkadan fonksiyonu bir defa çağırıyoruz
 //Sonuç sayfanın fonksiyonu
 function changeSceneToResult(image, answer){
@@ -31,10 +61,9 @@ const input = document.addEventListener('keydown', (e) => {
     if (e.key == "?"){
         //debugger;
         console.log("question mark");
-        getFetchData();
+        checkForced();
     }
 })
-
 
     /*
     document.getElementById("main-header").style.visibility = "hidden";
